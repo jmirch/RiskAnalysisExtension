@@ -83,13 +83,11 @@ async function runGameAnalysis() {
         const message = chatElements[element].textContent;
         if(message && message.indexOf("attacked") > -1) {
             // Use regex to get names and troop counts killed/lost
-
             const killed = parseInt(message.match(/killing\s(\d{1,2})/g)[0].replace("killing", "").trim())
             const lost = parseInt(message.match(/losing\s(\d{1,2})/g)[0].replace("losing", "").trim())
 
             // Handle capturing names
             // In some maps, names might be in the format of CountryShortName (CountryLongName) (PlayerName)
-            // Elif and Else capture edge cases
             const firstNames = message.split("attacked")[0].match(/\(([a-zA-Z0-9]*)\)/g)
             const secondNames = message.split("attacked")[1].match(/\(([a-zA-Z0-9]*)\)/g)
             var first = firstNames.length > 1 ? firstNames[1] : firstNames[0];
