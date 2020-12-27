@@ -143,7 +143,6 @@ async function runGameAnalysis() {
         }
         if(!colors[playerName] && color) {
             colors[playerName] = color;
-            console.log(playerName + ": " + color);
         }
     }
 
