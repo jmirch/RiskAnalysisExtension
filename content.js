@@ -1,9 +1,3 @@
-// Get Game number from URL
-const url = window.location.href;
-const sections = url.split("/");
-const gameNumber = sections.length > 0 ? sections[sections.length - 1] : 0;
-console.log(gameNumber);
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
