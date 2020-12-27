@@ -9,22 +9,25 @@ function createHeaderCell(value) {
     return header;
 }
 
-function createNormalCell(value) {
+function createNormalCell(value, colors) {
     const cell = document.createElement("TD");
     cell.setAttribute("style", "border: 1px solid black; padding: 3px")
+    if(colors[value]) {
+        cell.style.color = colors[value];
+    }
     cell.textContent = value;
     return cell;
 }
 
-function createRow(valuesArray) {
+function createRow(valuesArray, colors) {
     const tableRow = document.createElement("TR")
     for(var i = 0; i < valuesArray.length; i++) {
-        tableRow.appendChild(createNormalCell(valuesArray[i]));
+        tableRow.appendChild(createNormalCell(valuesArray[i], colors));
     }
     return tableRow;
 }
 
-function createTable(attack, defend) {
+function createTable(attack, defend, colors) {
     const table = document.createElement("TABLE");
     table.setAttribute("style", "width:100%; border-collapse: collapse; border: 1px solid black;")
     const tableHeaderRow = document.createElement("TR")
@@ -44,7 +47,7 @@ function createTable(attack, defend) {
         const attackKd = currAttack[0] == 0 ? 0 : currAttack[1] == 0 ? Infinity : (currAttack[0]/currAttack[1]).toFixed(2);
         const defendKd = currDefend[0] == 0 ? 0 : currDefend[1] == 0 ? Infinity : (currDefend[0]/currDefend[1]).toFixed(2);
 
-        table.appendChild(createRow([name, totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd]));
+        table.appendChild(createRow([name, totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd], colors));
     }
 
     return table;
@@ -124,11 +127,31 @@ async function runGameAnalysis() {
         }
     }
 
+    const colors = {}
+    const playerLinks = document.getElementsByClassName("player");
+    var link;
+    for(link in playerLinks) {
+        const currLink = playerLinks[link];
+        const playerName = currLink.textContent;
+        var style; 
+        var color;
+        try {
+            style = window.getComputedStyle(currLink)
+            color = style && style.getPropertyValue('color');
+        } catch (e) {
+            console.log("Error getting color of element: " + e)
+        }
+        if(!colors[playerName] && color) {
+            colors[playerName] = color;
+            console.log(playerName + ": " + color);
+        }
+    }
+
     // Get tab bodies and create new body
     const tabBodies = document.getElementsByClassName("tabs")[1]
     const newBody = document.createElement("DIV");
     newBody.setAttribute("style", "display: none");
-    newBody.appendChild(createTable(attack, defend));
+    newBody.appendChild(createTable(attack, defend, colors));
     tabBodies.appendChild(newBody);
 
     // Get tab bar and create new tab
