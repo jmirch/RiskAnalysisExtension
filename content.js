@@ -10,14 +10,14 @@ function sleep(ms) {
 
 function createHeaderCell(value) {
     const header = document.createElement("TH");
-    header.setAttribute("style", "border: 1px solid black;padding: 4px")
+    header.setAttribute("style", "border: 1px solid black;padding: 3px")
     header.textContent = value;
     return header;
 }
 
 function createNormalCell(value) {
     const cell = document.createElement("TD");
-    cell.setAttribute("style", "border: 1px solid black; padding: 4px")
+    cell.setAttribute("style", "border: 1px solid black; padding: 3px")
     cell.textContent = value;
     return cell;
 }
@@ -89,33 +89,17 @@ async function runGameAnalysis() {
         const message = chatElements[element].textContent;
         if(message && message.indexOf("attacked") > -1) {
             // Use regex to get names and troop counts killed/lost
-            const names = message.match(/\(([a-zA-Z0-9]*)\)/g)
+
             const killed = parseInt(message.match(/killing\s(\d{1,2})/g)[0].replace("killing", "").trim())
             const lost = parseInt(message.match(/losing\s(\d{1,2})/g)[0].replace("losing", "").trim())
 
             // Handle capturing names
             // In some maps, names might be in the format of CountryShortName (CountryLongName) (PlayerName)
             // Elif and Else capture edge cases
-            var first = "";
-            var second = "";
-            if(names.length == 2) {
-                first = names[0];
-                second = names[1];
-            } else if (names == 4) {
-                first = names[1];
-                second = names[3];
-            } else {
-                second = names[2];
-                if (!!attack[names[0]])
-                    first = names[0];
-                else if (!!attack[names[1]]) {
-                    first = names[1];
-                }
-                else {
-                    print("Could not identify name of attacker")
-                    first = "Unknown"
-                }
-            }
+            const firstNames = message.split("attacked")[0].match(/\(([a-zA-Z0-9]*)\)/g)
+            const secondNames = message.split("attacked")[1].match(/\(([a-zA-Z0-9]*)\)/g)
+            var first = firstNames.length > 1 ? firstNames[1] : firstNames[0];
+            var second = secondNames.length > 1 ? secondNames[1] : secondNames[0];
 
             // Remore parenthesis from names
             // TODO this can be fixed in the regex
@@ -183,7 +167,6 @@ async function runGameAnalysis() {
     }
     node.appendChild(link);
     tabBar.appendChild(node);
-
 }
 
 runGameAnalysis();
