@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Risk Analysis Extension",
+  "description": "This extension will analyze your risk game on Dominating12 and provide you with the data",
+  "version": "1.0",
+  "permissions": [
+   "activeTab"
+   ],
+   "content_scripts": [
+    {
+      "matches": [
+        "https://dominating12.com/game/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
