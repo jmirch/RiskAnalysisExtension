@@ -47,8 +47,8 @@ function createTable(attack, defend) {
         const totalKilled = currAttack[0] + currDefend[0];
         const totalLost = currAttack[1] + currDefend[1];
         const kd = totalKilled == 0 ? 0 : totalLost == 0 ? Infinity : (totalKilled/totalLost).toFixed(2);
-        const attackKd = currAttack[0] != 0 ? 0 : currAttack[1] == 0 ? Infinity : (currAttack[0]/currAttack[1]).toFixed(2);
-        const defendKd = currDefend[0] != 0 ? 0 : currDefend[1] == 0 ? Infinity : (currDefend[0]/currDefend[1]).toFixed(2);
+        const attackKd = currAttack[0] == 0 ? 0 : currAttack[1] == 0 ? Infinity : (currAttack[0]/currAttack[1]).toFixed(2);
+        const defendKd = currDefend[0] == 0 ? 0 : currDefend[1] == 0 ? Infinity : (currDefend[0]/currDefend[1]).toFixed(2);
 
         table.appendChild(createRow([name, totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd]));
     }
@@ -60,7 +60,7 @@ async function runGameAnalysis() {
     const gameLogTab = document.getElementById("game-log-tab-link");
     gameLogTab.click();
 
-    await sleep(5000)
+    await sleep(2000)
 
     // Try and click on load button. Not always present
     try {
@@ -71,7 +71,7 @@ async function runGameAnalysis() {
     }
 
     // Wait for log to load
-    await sleep(5000);
+    await sleep(2000);
     var count = 0;
     while(!!document.getElementById("load-log") && count < 20) {
         await sleep(2000);
