@@ -160,8 +160,6 @@ async function runGameAnalysis() {
     link.classList.add("tab-link");
     link.textContent = "Risk Analysis";
     link.onclick = function () {
-        var tabs
-        tabBar.get
         for (tab in tabBar.childNodes) {
             currTab = tabBar.childNodes[tab];
             if(currTab.nodeName == "LI") {
@@ -179,6 +177,24 @@ async function runGameAnalysis() {
         node.classList = ["active"];
         newBody.setAttribute("style", "display: block");
     }
+
+    // Observe for changes in tabs to ensure the new tab disappears 
+    MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+    var observer = new MutationObserver(function(mutations, observer) {
+        console.log(mutations, observer);
+        console.log("Tab bodies changed");
+        activeTabs = tabBar.getElementsByClassName("active");
+        if(activeTabs.length > 1) {
+            node.classList = [];
+            newBody.setAttribute("style", "display: none");
+        }
+    });
+
+    observer.observe(tabBodies, {
+      subtree: true,
+      attributes: true
+    });
+
     node.appendChild(link);
     tabBar.appendChild(node);
 }
