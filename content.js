@@ -181,8 +181,6 @@ async function runGameAnalysis() {
     // Observe for changes in tabs to ensure the new tab disappears 
     MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
     var observer = new MutationObserver(function(mutations, observer) {
-        console.log(mutations, observer);
-        console.log("Tab bodies changed");
         activeTabs = tabBar.getElementsByClassName("active");
         if(activeTabs.length > 1) {
             node.classList = [];
