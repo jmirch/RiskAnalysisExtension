@@ -27,11 +27,11 @@ function createRow(valuesArray, colors) {
     return tableRow;
 }
 
-function createTable(attack, defend, colors) {
+function createTable(attack, defend, colors, troopsGained) {
     const table = document.createElement("TABLE");
     table.setAttribute("style", "width:100%; border-collapse: collapse; border: 1px solid black;")
     const tableHeaderRow = document.createElement("TR")
-    const headers = ["Name", "Killed", "Lost", "KD", "Killed Attacking", "Lost Attacking", "Attack KD", "Killed Defending", "Lost Defending", "Defense KD"];
+    const headers = ["Name", "Total Troops Gained", "Killed", "Lost", "KD", "Killed Attacking", "Lost Attacking", "Attack KD", "Killed Defending", "Lost Defending", "Defense KD"];
     for (var i =0; i < headers.length; i++) {
         tableHeaderRow.appendChild(createHeaderCell(headers[i]));
     }
@@ -47,7 +47,7 @@ function createTable(attack, defend, colors) {
         const attackKd = currAttack[0] == 0 ? 0 : currAttack[1] == 0 ? Infinity : (currAttack[0]/currAttack[1]).toFixed(2);
         const defendKd = currDefend[0] == 0 ? 0 : currDefend[1] == 0 ? Infinity : (currDefend[0]/currDefend[1]).toFixed(2);
 
-        table.appendChild(createRow([name, totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd], colors));
+        table.appendChild(createRow([name, troopsGained[name],totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd], colors));
     }
 
     return table;
@@ -63,6 +63,9 @@ async function runGameAnalysis() {
     try {
         const loadMoreButton = document.getElementById("load-log");
         loadMoreButton.click();
+        
+        // Wait for log to load
+        await sleep(2000);
     } catch (e) {
         console.log("Load more button was not present or error occured. Error:" + e)
     }
@@ -76,9 +79,9 @@ async function runGameAnalysis() {
     }
 
     // Initialize maps
-    defend = {};
-    attack = {};
-
+    const defend = {};
+    const attack = {};
+    const troopsGained = {}
     const chatElements = document.getElementsByClassName("chat-message-body");
     var element;
 
@@ -124,6 +127,16 @@ async function runGameAnalysis() {
             defendCurrCount = defend[second]
             defendCurrCount[0] = defendCurrCount[0] + lost;
             defendCurrCount[1] = defendCurrCount[1] + killed;
+        } else if (message && message.indexOf("received") > 0 && message.indexOf("troop") > 0) {
+            const segments = message.trim().split(" ");
+            const name = segments[0];
+            const troops = parseInt(segments[2]);
+            console.log(message.trim())
+            if (!troopsGained[name]) {
+                troopsGained[name] = troops
+            } else {
+                troopsGained[name] = troopsGained[name] + troops;
+            }
         }
     }
 
@@ -150,7 +163,7 @@ async function runGameAnalysis() {
     const tabBodies = document.getElementsByClassName("tabs")[1]
     const newBody = document.createElement("DIV");
     newBody.setAttribute("style", "display: none");
-    newBody.appendChild(createTable(attack, defend, colors));
+    newBody.appendChild(createTable(attack, defend, colors, troopsGained));
     tabBodies.appendChild(newBody);
 
     // Get tab bar and create new tab
