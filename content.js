@@ -31,7 +31,7 @@ function createTable(attack, defend, colors, troopsGained) {
     const table = document.createElement("TABLE");
     table.setAttribute("style", "width:100%; border-collapse: collapse; border: 1px solid black;")
     const tableHeaderRow = document.createElement("TR")
-    const headers = ["Name", "Total Troops Gained", "Killed", "Lost", "KD", "Killed Attacking", "Lost Attacking", "Attack KD", "Killed Defending", "Lost Defending", "Defense KD"];
+    const headers = ["Name", "Troops Gained", "Killed", "Lost", "KD", "Killed Attacking", "Lost Attacking", "Attack KD", "Killed Defending", "Lost Defending", "Defense KD"];
     for (var i =0; i < headers.length; i++) {
         tableHeaderRow.appendChild(createHeaderCell(headers[i]));
     }
