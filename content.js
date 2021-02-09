@@ -4,7 +4,7 @@ function sleep(ms) {
 
 function createHeaderCell(value) {
     const header = document.createElement("TH");
-    header.setAttribute("style", "border: 1px solid black;padding: 3px")
+    header.setAttribute("style", "border: 1px solid black;padding: 3px; word-wrap: normal")
     header.textContent = value;
     return header;
 }
@@ -46,42 +46,15 @@ function createTable(attack, defend, colors, troopsGained) {
         const kd = totalKilled == 0 ? 0 : totalLost == 0 ? Infinity : (totalKilled/totalLost).toFixed(2);
         const attackKd = currAttack[0] == 0 ? 0 : currAttack[1] == 0 ? Infinity : (currAttack[0]/currAttack[1]).toFixed(2);
         const defendKd = currDefend[0] == 0 ? 0 : currDefend[1] == 0 ? Infinity : (currDefend[0]/currDefend[1]).toFixed(2);
+        const troopsGainedForPlayer = troopsGained[name] || 0;
 
-        table.appendChild(createRow([name, troopsGained[name],totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd], colors));
+        table.appendChild(createRow([name, troopsGainedForPlayer, totalKilled, totalLost, kd, currAttack[0], currAttack[1], attackKd, currDefend[0], currDefend[1], defendKd], colors));
     }
 
     return table;
 }
 
-async function runGameAnalysis() {
-    const gameLogTab = document.getElementById("game-log-tab-link");
-    gameLogTab.click();
-
-    await sleep(2000)
-
-    // Try and click on load button. Not always present
-    try {
-        const loadMoreButton = document.getElementById("load-log");
-        loadMoreButton.click();
-        
-        // Wait for log to load
-        await sleep(2000);
-    } catch (e) {
-        console.log("Load more button was not present or error occured. Error:" + e)
-    }
-
-    // Wait for log to load
-    await sleep(2000);
-    var count = 0;
-    while(!!document.getElementById("load-log") && count < 20) {
-        await sleep(2000);
-        count++
-    }
-
-    // Initialize maps
-    const defend = {};
-    const attack = {};
-    const troopsGained = {}
+function runAnalysis(attack, defend, colors, troopsGained) {
     const chatElements = document.getElementsByClassName("chat-message-body");
     var element;
 
@@ -131,7 +104,6 @@ async function runGameAnalysis() {
             const segments = message.trim().split(" ");
             const name = segments[0];
             const troops = parseInt(segments[2]);
-            console.log(message.trim())
             if (!troopsGained[name]) {
                 troopsGained[name] = troops
             } else {
@@ -140,7 +112,6 @@ async function runGameAnalysis() {
         }
     }
 
-    const colors = {}
     const playerLinks = document.getElementsByClassName("player");
     var link;
     for(link in playerLinks) {
@@ -158,6 +129,41 @@ async function runGameAnalysis() {
             colors[playerName] = color;
         }
     }
+}
+
+async function main() {
+    const gameLogTab = document.getElementById("game-log-tab-link");
+    gameLogTab.click();
+
+    await sleep(2000)
+
+    // Try and click on load button. Not always present
+    try {
+        const loadMoreButton = document.getElementById("load-log");
+        loadMoreButton.click();
+        
+        // Wait for log to load
+        await sleep(2000);
+    } catch (e) {
+        console.log("Load more button was not present or error occured. Error:" + e)
+    }
+
+    // Wait for log to load
+    await sleep(2000);
+    var count = 0;
+    while(!!document.getElementById("load-log") && count < 20) {
+        await sleep(2000);
+        count++
+    }
+
+    // Initialize maps
+    var defend = {};
+    var attack = {};
+    var troopsGained = {}
+    var colors = {}
+
+    // Run analysis
+    runAnalysis(attack, defend, colors, troopsGained)
 
     // Get tab bodies and create new body
     const tabBodies = document.getElementsByClassName("tabs")[1]
@@ -206,8 +212,25 @@ async function runGameAnalysis() {
       attributes: true
     });
 
+    //Observe changes in the game log
+    var gameLogObserver = new MutationObserver(function(mutations, observer) {
+        newBody.removeChild(newBody.firstChild)
+        attack = {};
+        defend = {};
+        colors = {};
+        troopsGained = {};
+        runAnalysis(attack, defend, colors, troopsGained)
+        console.log("In game log changes")
+        newBody.appendChild(createTable(attack, defend, colors, troopsGained));
+    });
+
+    const gameLog = document.getElementById("game-log-list");
+    gameLogObserver.observe(gameLog, {
+        childList: true
+    });
+
     node.appendChild(link);
     tabBar.appendChild(node);
 }
 
-runGameAnalysis();
+main();
