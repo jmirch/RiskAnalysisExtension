@@ -38,7 +38,9 @@ function createTable(attack, defend, colors, troopsGained) {
     table.appendChild(tableHeaderRow);
 
     var name;
-    for(name in attack) {
+    const names = Object.keys(attack).sort();
+    for(index in names) {
+        name = names[index];
         const currAttack = attack[name];
         const currDefend = defend[name];
         const totalKilled = currAttack[0] + currDefend[0];
