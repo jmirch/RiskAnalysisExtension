@@ -69,8 +69,8 @@ function runAnalysis(attack, defend, colors, troopsGained) {
 
             // Handle capturing names
             // In some maps, names might be in the format of CountryShortName (CountryLongName) (PlayerName)
-            const firstNames = message.split("attacked")[0].match(/\(([a-zA-Z0-9]*)\)/g)
-            const secondNames = message.split("attacked")[1].match(/\(([a-zA-Z0-9]*)\)/g)
+            const firstNames = message.split("attacked")[0].match(/\(([a-zA-Z0-9_]*)\)/g)
+            const secondNames = message.split("attacked")[1].match(/\(([a-zA-Z0-9_]*)\)/g)
             var first = firstNames.length > 1 ? firstNames[1] : firstNames[0];
             var second = secondNames.length > 1 ? secondNames[1] : secondNames[0];
 
