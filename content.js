@@ -137,16 +137,11 @@ async function main() {
     // Click on Game Log Tab
     const gameLogTab = document.getElementById("game-log-tab-link");
     gameLogTab.click();
-    await sleep(1000);
-
-    // Initialize wait
-    var wait = false;
 
     // Try and click on load button. Not always present
     try {
         const loadMoreButton = document.getElementById("load-log");
         loadMoreButton.click();     
-        wait = true;
     } catch (e) {
         console.log("Load more button was not present or error occured. Error:" + e)
     }
@@ -160,13 +155,7 @@ async function main() {
         gameChatTab.click();
     }
 
-    if(wait) {
-        var count = 0;
-        while(!!document.getElementById("load-log") && count < 20) {
-            await sleep(2000);
-            count++
-        }
-    }
+    window.scrollTo(0,0)
 
     // Initialize maps
     var defend = {};
