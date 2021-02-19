@@ -69,8 +69,8 @@ function runAnalysis(attack, defend, colors, troopsGained) {
 
             // Handle capturing names
             // In some maps, names might be in the format of CountryShortName (CountryLongName) (PlayerName)
-            const firstNames = message.split("attacked")[0].match(/\(([a-zA-Z0-9_]*)\)/g)
-            const secondNames = message.split("attacked")[1].match(/\(([a-zA-Z0-9_]*)\)/g)
+            const firstNames = message.split("attacked")[0].match(/\(([a-zA-Z0-9_-]*)\)/g)
+            const secondNames = message.split("attacked")[1].match(/\(([a-zA-Z0-9_-]*)\)/g)
             var first = firstNames.length > 1 ? firstNames[1] : firstNames[0];
             var second = secondNames.length > 1 ? secondNames[1] : secondNames[0];
 
@@ -134,28 +134,38 @@ function runAnalysis(attack, defend, colors, troopsGained) {
 }
 
 async function main() {
+    // Click on Game Log Tab
     const gameLogTab = document.getElementById("game-log-tab-link");
     gameLogTab.click();
+    await sleep(1000);
 
-    await sleep(2000)
+    // Initialize wait
+    var wait = false;
 
     // Try and click on load button. Not always present
     try {
         const loadMoreButton = document.getElementById("load-log");
-        loadMoreButton.click();
-        
-        // Wait for log to load
-        await sleep(2000);
+        loadMoreButton.click();     
+        wait = true;
     } catch (e) {
         console.log("Load more button was not present or error occured. Error:" + e)
     }
+    
+    // Return to default tab
+    try {
+        const teamChatTab = document.getElementById("team-chat-tab-link");
+        teamChatTab.click();
+    } catch {
+        const gameChatTab = document.getElementById("game-chat-tab-link");
+        gameChatTab.click();
+    }
 
-    // Wait for log to load
-    await sleep(2000);
-    var count = 0;
-    while(!!document.getElementById("load-log") && count < 20) {
-        await sleep(2000);
-        count++
+    if(wait) {
+        var count = 0;
+        while(!!document.getElementById("load-log") && count < 20) {
+            await sleep(2000);
+            count++
+        }
     }
 
     // Initialize maps
