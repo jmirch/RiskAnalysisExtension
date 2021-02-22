@@ -134,6 +134,9 @@ function runAnalysis(attack, defend, colors, troopsGained) {
 }
 
 async function main() {
+    // Get current scroll position
+    var scroll = window.pageYOffset
+
     // Click on Game Log Tab
     const gameLogTab = document.getElementById("game-log-tab-link");
     gameLogTab.click();
@@ -155,7 +158,8 @@ async function main() {
         gameChatTab.click();
     }
 
-    window.scrollTo(0,0)
+    // Move to previous scroll position
+    window.scrollTo(0 ,scroll)
 
     // Initialize maps
     var defend = {};
