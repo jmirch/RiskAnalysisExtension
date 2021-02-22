@@ -195,7 +195,7 @@ async function main() {
         }
 
         node.classList = ["active"];
-        newBody.setAttribute("style", "display: block");
+        newBody.setAttribute("style", "display: block; overflow-y: scroll; height: 295px;overflow-wrap: break-word");
     }
 
     // Observe for changes in tabs to ensure the new tab disappears 
