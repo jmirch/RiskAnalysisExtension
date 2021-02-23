@@ -2,10 +2,14 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function createHeaderCell(value) {
+function createHeaderCell(value, hoverText) {
     const header = document.createElement("TH");
+    const span = document.createElement("SPAN");
+    span.title = hoverText;
+    span.textContent = value;
+    header.appendChild(span)
     header.setAttribute("style", "border: 1px solid black;padding: 3px; word-wrap: normal")
-    header.textContent = value;
+    
     return header;
 }
 
@@ -32,8 +36,21 @@ function createTable(attack, defend, colors, troopsGained) {
     table.setAttribute("style", "width:100%; border-collapse: collapse; border: 1px solid black;")
     const tableHeaderRow = document.createElement("TR")
     const headers = ["Name", "Troops Gained", "Killed", "Lost", "KD", "Killed Attacking", "Lost Attacking", "Attack KD", "Killed Defending", "Lost Defending", "Defense KD"];
+    const hoverText = [
+        "Player's username",
+        "Total number of troops each player has gained from area bonus or card turn ins",
+        "Total number of opponent's troops each player has killed",
+        "Total number of troops each player has lost",
+        "Kill death ratio = Killed / Lost",
+        "Total number of troops each player has killed while attacking an opponent",
+        "Total number of troops each player has lost while attacking an opponent",
+        "Attack kill death ratio = Killed Attacking / Lost Attacking", 
+        "Total number of opponent's troops that have been killed while defending an area",
+        "Total number of troops each player has lost while defending an area",
+        "Defense kill death ratio = Killed Defending / Lost Defending"
+    ];
     for (var i =0; i < headers.length; i++) {
-        tableHeaderRow.appendChild(createHeaderCell(headers[i]));
+        tableHeaderRow.appendChild(createHeaderCell(headers[i], hoverText[i]));
     }
     table.appendChild(tableHeaderRow);
 
@@ -174,6 +191,7 @@ async function main() {
     const tabBodies = document.getElementsByClassName("tabs")[1]
     const newBody = document.createElement("DIV");
     newBody.setAttribute("style", "display: none");
+    
     newBody.appendChild(createTable(attack, defend, colors, troopsGained));
     tabBodies.appendChild(newBody);
 
