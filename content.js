@@ -155,9 +155,18 @@ async function main() {
     var scroll = window.pageYOffset
 
     // Click on Game Log Tab
-    const gameLogTab = document.getElementById("game-log-tab-link");
-    gameLogTab.click();
-
+    var attempts = 0;
+    while(attempts < 20) {
+        try {
+            const gameLogTab = document.getElementById("game-log-tab-link");
+            gameLogTab.click();
+            break;
+        } catch (e) {
+            attempts++
+            console.log("Game log tab does not exists attempt: " + attempts)
+        }
+    }
+ 
     // Try and click on load button. Not always present
     try {
         const loadMoreButton = document.getElementById("load-log");
@@ -217,7 +226,7 @@ async function main() {
         }
 
         node.classList = ["active"];
-        newBody.setAttribute("style", "display: block; overflow-y: scroll; height: 295px;overflow-wrap: break-word");
+        newBody.style = "display: block; overflow-y: scroll; height: 295px;overflow-wrap: break-word";
     }
 
     // Observe for changes in tabs to ensure the new tab disappears 
