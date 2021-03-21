@@ -55,11 +55,14 @@ function createTable(attack, defend, colors, troopsGained) {
     table.appendChild(tableHeaderRow);
 
     var name;
-    const names = Object.keys(attack).sort();
+    var names = Object.keys(troopsGained);
+    names = [...names, ...Object.keys(attack)];
+    names = [...names, ...Object.keys(defend)];
+    names = Array.from(new Set([...names])).sort();
     for(index in names) {
         name = names[index];
-        const currAttack = attack[name];
-        const currDefend = defend[name];
+        const currAttack = attack[name] || [0, 0];
+        const currDefend = defend[name] || [0, 0];
         const totalKilled = currAttack[0] + currDefend[0];
         const totalLost = currAttack[1] + currDefend[1];
         const kd = totalKilled == 0 ? 0 : totalLost == 0 ? Infinity : (totalKilled/totalLost).toFixed(2);
