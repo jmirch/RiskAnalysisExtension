@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Risk Analysis Extension",
+  "name": "D12 Analysis Extension",
   "description": "Extension to provide analysis on Dominating12 games https://github.com/jmirch/RiskAnalysisExtension",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "content_scripts": [
     {
       "matches": [
