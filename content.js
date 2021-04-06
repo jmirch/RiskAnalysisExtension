@@ -183,8 +183,12 @@ async function main() {
         const teamChatTab = document.getElementById("team-chat-tab-link");
         teamChatTab.click();
     } catch {
-        const gameChatTab = document.getElementById("game-chat-tab-link");
-        gameChatTab.click();
+        try {
+            const gameChatTab = document.getElementById("game-chat-tab-link");
+            gameChatTab.click();
+        } catch (e) {
+            console.log("Team chat tab and game chat tab were not present to be clicked")
+        }
     }
 
     // Move to previous scroll position
@@ -212,7 +216,7 @@ async function main() {
     var node = document.createElement("LI");
     var link = document.createElement("A");
     link.classList.add("tab-link");
-    link.textContent = "Risk Analysis";
+    link.textContent = "Analysis";
     link.onclick = function () {
         for (tab in tabBar.childNodes) {
             currTab = tabBar.childNodes[tab];
