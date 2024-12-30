@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "D12 Analysis Extension",
   "description": "Extension to provide analysis on Dominating12 games https://github.com/jmirch/RiskAnalysisExtension",
   "version": "1.0.6",
